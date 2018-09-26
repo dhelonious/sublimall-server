@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.conf.urls import include
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .donations.views import DonationsView
 
@@ -71,4 +73,4 @@ urlpatterns = [
     url(r"^account/new_api_key$", GenerateAPIKey.as_view(), name="account-new-api-key"),
     url(r"^docs$", TemplateView.as_view(template_name="docs.html"), name="docs"),
     url(r"^donate$", DonationsView.as_view(), name="donations"),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
