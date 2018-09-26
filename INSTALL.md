@@ -23,18 +23,23 @@ pip install gunicorn
 
 ## Deployment
 
-I recommend using whatever software you are most familiar with for managing Sublimall process. For me, that software of choice is [Supervisor][0].
-Configuring Supervisor couldn’t be more simple. Just point it to the sentry executable in your virtualenv’s bin/ folder and you’re good to go.
-
-If you want to use only for you or small team you can change `MAX_MEMBER` in your `local_settings.py` file.
+Create daemon at ```/etc/systemd/system/sublimall.service```:
 
 ```
-[program:sublimall]
-directory=/var/www/sublimall
-command=/var/www/sublimall/venv/bin/gunicorn sublimall.wsgi:application --log-file=-
-autostart=true
-autorestart=true
-redirect_stderr=true
+[Unit]
+Description=Sublimall Server for synchronizing Sublime Text settings
+
+[Service]
+Type=simple
+PIDFile=/run/sublimall.pid
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/sublimall
+ExecStart=/var/www/sublimall/venv/bin/gunicorn sublimall.wsgi:application --log-file=- -b 127.0.0.1:9002
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 For nginx, this is a production server configuration file dump:
@@ -99,6 +104,44 @@ server {
 ```
 
 As you can see, configuration file include ssl, which you can drop easily.
+
+For Apache2 with ssl use:
+
+```
+<VirtualHost *:443>
+  ServerName  example.com
+  ServerAdmin webmaster@example.com
+  DocumentRoot /var/www/sublimall
+
+  ProxyPreserveHost On
+  ProxyRequests off
+
+  ProxyPass        / http://localhost:9002/
+  ProxyPassReverse / http://localhost:9002/
+  RequestHeader set Origin http://localhost:9002/
+
+  Alias /static /var/www/sublimall/static
+  <Directory /var/www/sublimall/static>
+    AllowOverride None
+    Order allow,deny
+    Allow from all 
+  </Directory>
+
+  SSLProxyEngine On
+  SSLProtocol all -SSLv2 -SSLv3
+  SSLHonorCipherOrder on
+  SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS +RC4 RC4"
+  SSLCertificateFile      /etc/apache2/ssl/sublimall/cert.pem;
+  SSLCertificateKeyFile   /etc/apache2/ssl/sublimall/privkey.pem
+  SSLCertificateChainFile /etc/apache2/ssl/sublimall/chain.pem
+
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+```
 
 ## Plugin
 
