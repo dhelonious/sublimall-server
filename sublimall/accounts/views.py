@@ -263,15 +263,11 @@ class AccountView(LoginRequiredMixin, View):
         member = request.user
         packages = Package.objects.filter(member=member)
 
-        is_donator = member.is_donator()
-
         return render(
             request,
             "account.html",
             {
-                "storage_limit": member.get_storage_limit(is_donator),
-                "is_donator": is_donator,
-                "donations": member.donation_set.filter(paid=True),
+                "storage_limit": member.get_storage_limit(),
                 "is_staff": member.is_staff,
                 "date_joined": member.date_joined,
                 "packages": packages,

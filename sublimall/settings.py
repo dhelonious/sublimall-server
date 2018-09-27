@@ -18,7 +18,6 @@ ALLOWED_HOSTS = []
 
 MAX_MEMBER = 500
 MAX_PACKAGE_SIZE = 30 * 1024 * 1024
-MAX_PACKAGE_SIZE_DONATE = 100 * 1024 * 1024
 PACKAGES_UPLOAD_TO = "packages"
 AUTH_USER_MODEL = "accounts.Member"
 
@@ -33,7 +32,6 @@ INSTALLED_APPS = (
     "sublimall.accounts",
     "sublimall.storage",
     "sublimall.notifications",
-    "sublimall.donations",
 )
 
 MIDDLEWARE = (

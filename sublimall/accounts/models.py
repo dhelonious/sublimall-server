@@ -87,19 +87,8 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.email
 
-    def is_donator(self):
-        if self.donation_set.filter(charge_id__isnull=False, paid=True).only("paid"):
-            return True
-        return False
-
-    def get_storage_limit(self, is_donator=None):
-        if is_donator is None:
-            is_donator = self.is_donator()
-
-        if is_donator:
-            return settings.MAX_PACKAGE_SIZE_DONATE
-        else:
-            return settings.MAX_PACKAGE_SIZE
+    def get_storage_limit(self):
+        return settings.MAX_PACKAGE_SIZE
 
     def send_registration_confirmation(self, reset_key=False, connection=None):
         if reset_key:
