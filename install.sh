@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /var/www &&\
-git clone https://github.com/dhelonious/sublimall-server.git &&\
+git clone https://github.com/dhelonious/sublimall-server.git sublimall &&\
 cd sublimall &&\
 virtualenv -p /usr/bin/python3 venv &&\
 source venv/bin/activate &&\
