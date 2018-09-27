@@ -1,12 +1,14 @@
-# Set up you own Sublimall server
+# Set up your own Sublimall server
 
 ## Requirements
 
 You'll need:
- - Python 3.6
- - Database like Postgresql is optionnal if you use Sublimall for personnal or few users
+ - Python 3.5
+ - Database like Postgresql is optional if you use Sublimall only for yourself or few users
 
 ## Installation
+
+Use the ```install.sh``` script or do it manually:
 
 ```
 cd /var/www
@@ -24,7 +26,7 @@ chown -R www-data:www-data /var/www/sublimall
 
 ## Deployment
 
-Create daemon at ```/etc/systemd/system/sublimall.service```:
+Create a daemon at ```/etc/systemd/system/sublimall.service```:
 
 ```
 [Unit]
@@ -153,10 +155,10 @@ server {
 
 ## Plugin
 
-And you just have to change your Sublime Text plugin settings.
+You have to change your Sublime Text plugin settings:
 
 ```
-"api_root_url": "http://<ip>:<port>",
+"api_root_url": "https://example.com",
 ```
 
 [0]: http://supervisord.org/
