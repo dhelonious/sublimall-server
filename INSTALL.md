@@ -5,12 +5,12 @@
 You'll need:
  - Python 3.6
  - Database like Postgresql is optionnal if you use Sublimall for personnal or few users
- 
+
 ## Installation
 
 ```
 cd /var/www
-git clone https://github.com/toxinu/sublimall-server.git sublimall
+git clone https://github.com/dhelonious/sublimall-server.git sublimall
 cd sublimall
 virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
