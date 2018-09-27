@@ -19,7 +19,7 @@ cp sublimall/local_settings_example.py sublimall/local_settings.py
 ./manage.py migrate
 ./manage.py createsuperuser
 pip install gunicorn
-chown www-data:www-data /var/www/sublimall
+chown -R www-data:www-data /var/www/sublimall
 ```
 
 ## Deployment
@@ -43,7 +43,54 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-For nginx, this is a production server configuration file dump:
+For Apache2 use:
+
+```
+<VirtualHost *:80>
+  ServerName example.com
+  ServerAdmin webmaster@example.com
+  Redirect / https://example.com
+
+  ErrorLog ${APACHE_LOG_DIR}.sublimall.error.log
+  CustomLog ${APACHE_LOG_DIR}/sublimall.access.log combined
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName example.com
+  ServerAdmin webmaster@example.com
+  DocumentRoot /var/www/sublimall
+
+  ProxyPreserveHost On
+  ProxyRequests off
+
+  ProxyPass        / http://localhost:9002/
+  ProxyPassReverse / http://localhost:9002/
+  RequestHeader set Origin http://localhost:9002/
+
+  Alias /static /var/www/sublimall/static
+  <Directory /var/www/sublimall/static>
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  SSLProxyEngine On
+  SSLProtocol all -SSLv2 -SSLv3
+  SSLHonorCipherOrder on
+  SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS +RC4 RC4"
+  SSLCertificateFile      /etc/apache2/ssl/sublimall/cert.pem;
+  SSLCertificateKeyFile   /etc/apache2/ssl/sublimall/privkey.pem
+  SSLCertificateChainFile /etc/apache2/ssl/sublimall/chain.pem
+
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+```
+
+For nginx use:
 
 ```
 server {
@@ -75,7 +122,7 @@ server {
 
     ssl_certificate /etc/nginx/ssl/sublimall.public.crt;
     ssl_certificate_key /etc/nginx/ssl/sublimall.private.rsa;
-    
+
     error_log /var/log/nginx/sublimall.error.log;
     access_log /var/log/nginx/sublimall.access.log;
 
@@ -102,46 +149,6 @@ server {
         proxy_pass http://127.0.0.1:9002;
     }
 }
-```
-
-As you can see, configuration file include ssl, which you can drop easily.
-
-For Apache2 with ssl use:
-
-```
-<VirtualHost *:443>
-  ServerName  example.com
-  ServerAdmin webmaster@example.com
-  DocumentRoot /var/www/sublimall
-
-  ProxyPreserveHost On
-  ProxyRequests off
-
-  ProxyPass        / http://localhost:9002/
-  ProxyPassReverse / http://localhost:9002/
-  RequestHeader set Origin http://localhost:9002/
-
-  Alias /static /var/www/sublimall/static
-  <Directory /var/www/sublimall/static>
-    AllowOverride None
-    Order allow,deny
-    Allow from all 
-  </Directory>
-
-  SSLProxyEngine On
-  SSLProtocol all -SSLv2 -SSLv3
-  SSLHonorCipherOrder on
-  SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS +RC4 RC4"
-  SSLCertificateFile      /etc/apache2/ssl/sublimall/cert.pem;
-  SSLCertificateKeyFile   /etc/apache2/ssl/sublimall/privkey.pem
-  SSLCertificateChainFile /etc/apache2/ssl/sublimall/chain.pem
-
-  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-</VirtualHost>
 ```
 
 ## Plugin
