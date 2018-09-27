@@ -153,6 +153,10 @@ server {
 }
 ```
 
+For extra security failed logins should be logged and watched by ```fail2ban```.
+If the server is only used personally, then this can be easily done with basic
+password authentication.
+
 ## Plugin
 
 You have to change your Sublime Text plugin settings:
