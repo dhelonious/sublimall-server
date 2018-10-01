@@ -6,7 +6,7 @@ Sublimall
 .. image:: https://coveralls.io/repos/github/toxinu/sublimall-server/badge.svg?branch=master
   :target: https://coveralls.io/github/toxinu/sublimall-server?branch=master
 
-Sublimall is Python 3.6 server behind Sublimall_ SublimeText plugin.
+Sublimall is Python 3.5 server behind Sublimall_ SublimeText plugin.
 
 Installation
 ~~~~~~~~~~~~

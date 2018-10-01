@@ -153,6 +153,8 @@ server {
 }
 ```
 
+For extra security failed logins should be logged and watched by ```fail2ban```.
+
 ## Plugin
 
 You have to change your Sublime Text plugin settings:
