@@ -24,6 +24,8 @@ pip install gunicorn
 chown -R www-data:www-data /var/www/sublimall
 ```
 
+**Note**: I disabled the sign up links, since I use the server only for myself. If you want to allow for registrations, feel free to uncomment the lines corresponding to *Sign up* in `templates/home.html` and `templates/base.html`.
+
 ## Deployment
 
 Create a daemon at ```/etc/systemd/system/sublimall.service```:
