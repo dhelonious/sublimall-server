@@ -1,5 +1,5 @@
 *.pyc
-virtenv*
+venv*
 *.sqlite3
 packages
 email-messages
