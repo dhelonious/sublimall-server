@@ -28,7 +28,7 @@ from .utils import get_hash
 from .utils import is_password_valid
 
 logger = logging.getLogger(__name__)
-
+auth_logger = logging.getLogger('sublimall.auth')
 
 class MaintenanceView(TemplateView):
     template_name = "error.html"
@@ -80,6 +80,11 @@ class LoginView(FormView):
         return HttpResponseRedirect(reverse("account"))
 
     def form_invalid(self, form):
+        if self.request.method == "POST":
+            auth_logger.error("Login Fail {} by {}".format(
+                self.request.POST.get("username"),
+                self.request.META.get("HTTP_X_FORWARDED_FOR"),
+            ))
         return self.render_to_response(self.get_context_data(form=form))
 
     @method_decorator(sensitive_post_parameters("password"))

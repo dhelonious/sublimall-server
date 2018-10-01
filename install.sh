@@ -10,4 +10,6 @@ cp sublimall/local_settings_example.py sublimall/local_settings.py &&\
 ./manage.py migrate &&\
 ./manage.py createsuperuser &&\
 pip install gunicorn &&\
-chown -R www-data:www-data /var/www/sublimall
+chown -R www-data:www-data /var/www/sublimall &&\
+touch /var/log/sublimall.auth.log &&\
+chown www-data /var/log/sublimall.auth.log

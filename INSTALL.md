@@ -22,9 +22,34 @@ cp sublimall/local_settings_example.py sublimall/local_settings.py
 ./manage.py createsuperuser
 pip install gunicorn
 chown -R www-data:www-data /var/www/sublimall
+touch /var/log/sublimall.auth.log
+chown www-data /var/log/sublimall.auth.log
 ```
 
 **Note**: I disabled the sign up links, since I use the server only for myself. If you want to allow for registrations, feel free to uncomment the lines corresponding to *Sign up* in `templates/home.html` and `templates/base.html`.
+
+### Fail2ban setup
+
+To increase security the authentication log should be watched by fail2ban. A basic fail2ban configuration for sublimall is given below.
+
+*/etc/fail2ban/filter.d/sublimall-auth.conf*:
+```
+[Definition]
+failregex = Login Fail.*by <HOST>
+ignoreregex =
+```
+
+*/etc/fail2ban/jail.d/defaults-DISTRIBUTION.conf* (where DISTRIBUTION can be debian, raspbian, ...):
+```
+[sublimall]
+enabled = true
+port = 80,443
+protocol = tcp
+filter = sublimall-auth
+maxretry = 3
+bantime = 5400
+logpath = /var/log/sublimall.auth.log
+```
 
 ## Deployment
 

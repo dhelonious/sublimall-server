@@ -20,6 +20,7 @@ MAX_MEMBER = 500
 MAX_PACKAGE_SIZE = 30 * 1024 * 1024
 PACKAGES_UPLOAD_TO = "packages"
 AUTH_USER_MODEL = "accounts.Member"
+AUTH_LOG_FILE = "/var/log/sublimall.auth.log"
 
 INSTALLED_APPS = (
     "django.contrib.admin",
@@ -65,6 +66,32 @@ TEMPLATES = [
     }
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "auth": {
+            "class": "logging.Formatter",
+            "format": "%(created)s|%(levelname)s|%(message)s",
+        }
+    },
+    "handlers": {
+        "auth": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "auth",
+            "filename": AUTH_LOG_FILE,
+        }
+    },
+    "loggers": {
+        "sublimall.auth": {
+            "handlers": ["auth"],
+            "level": "INFO",
+            "propagate": False,
+        }
+    }
+}
+
 ROOT_URLCONF = "sublimall.urls"
 
 WSGI_APPLICATION = "sublimall.wsgi.application"
@@ -97,7 +124,7 @@ FROM_EMAIL = "root@localhost"
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-#  DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCESS_KEY = ""
 AWS_STORAGE_BUCKET_NAME = "sublimall"
