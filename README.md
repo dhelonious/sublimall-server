@@ -182,12 +182,22 @@ server {
 
 For extra security failed logins should be logged and watched by ```fail2ban```.
 
-## Plugin
+## Settings
 
-You have to change your Sublime Text plugin settings:
+You probably want to change some settings in `/var/www/sublimall/sublimall/local_settings.py`:
+
+```python
+ALLOWED_HOSTS = ["example.com"]
+TIME_ZONE = "Europe/Berlin"
+MAX_PACKAGE_SIZE = 100 * 1024 * 1024 # 100 MB
+```
+
+A list of valid timezones can be found here: [https://en.wikipedia.org/wiki/List_of_tz_database_time_zones]
+
+### Plugin
+
+Finally, you have to change your Sublime Text plugin settings:
 
 ```
 "api_root_url": "https://example.com",
 ```
-
-[0]: http://supervisord.org/
